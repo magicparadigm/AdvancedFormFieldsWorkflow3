@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="EnvelopeCustom - Document Fields.aspx.cs" Inherits="demos_EnvelopeCustom___Document_Fields" %>
 
 <!DOCTYPE html>
 <html class="no-js" lang="">
@@ -64,11 +64,11 @@
     <div id="mainForm" runat="server" class="container-fixed formz-vertical">
         <br />
         <ul class="nav nav-pills" role="tablist">
-            <li class="active"><a href="#">Templates</a></li>
-            <li><a href="DynamicFields.aspx">Dynamic Fields</a></li>
+            <li><a href="Default.aspx">Templates</a></li>
+            <li ><a href="DynamicFields.aspx">Dynamic Fields</a></li>
             <li><a href="AnchorText.aspx">Anchor Text Fields</a></li>
             <li><a href="PDFFormFields.aspx">PDF Form Fields</a></li>
-            <li><a href="EnvelopeCustom - Document Fields.aspx">Envelope Custom - Document Fields</a></li>
+            <li class="active"><a href="EnvelopeCustom - Document Fields.aspx">Envelope Custom - Document Fields</a></li>
         </ul>
         <form class="form-inline" runat="server" id="form">
             <div class="row">
@@ -118,20 +118,85 @@
             </div>
             <div class="row" id="templates" runat="server">
                 <div class="col-xs-12">
-                    <h2>Template Information</h2>
+                    <h2>Select Document</h2>
                     <div class="form-group">
                         <asp:FileUpload ID="FileUpload1" runat="server" />
                     </div>
                     <div class="form-group">
-                        <button type="button" visible="true" id="uploadButton" runat="server" class="btn" style="color: #fff; padding: 10px 80px; font-size: 14px; margin: 40px auto; display: block;"></button>
+                        <button type="button" visible="true" id="UploadButton" runat="server" class="btn" style="color: #fff; padding: 10px 80px; font-size: 14px; margin: 40px auto; display: block;"></button>
                     </div>
                     <div class="form-group">
                         <label for="uploadFile">Upload File </label>
                         <input type="text" runat="server" class="form-control" id="uploadFile" placeholder="" readonly="readonly">
                     </div>
+                    <hr />
+                </div>
+            </div>
+            <div class="row" id="tabInfo" runat="server">
+                <div class="col-xs-12">
+                    <h2>Custom Field</h2>
+                    <div class="form-group">
+                        <label for="tabName">Name</label>
+                        <input type="text" runat="server" class="form-control" id="tabName" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="page">Page</label>
+                        <input type="text" runat="server" class="form-control" id="tabPage" placeholder="">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="tabName">X Position</label>
+                        <input type="text" runat="server" class="form-control" id="xPosition" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="page">Y Position</label>
+                        <input type="text" runat="server" class="form-control" id="yPosition" placeholder="">
+                    </div>
+                    <hr />
+                </div>
+            </div>
+
+
+            <div class="row" id="EnvelopeCustomFields" runat="server">
+                <div class="col-xs-12">
+                    <h2>Envelope Custom Fields</h2>
+                    <div class="form-group">
+                        <label for="tabName">Name</label>
+                        <input type="text" runat="server" class="form-control" id="EnvelopeCustomFieldName" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="tabName">Value</label>
+                        <input type="text" runat="server" class="form-control" id="EnvelopeCustomFieldValue" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <button type="button" visible="true" id="AddEnvelopeCustomFieldButton" runat="server" class="btn" style="color: #fff; padding: 10px 80px; font-size: 14px; margin: 40px auto; display: block;"></button>
+                    </div>
+                    <div class="form-group">
+                        <label for="envelopeCustomFieldsList" id="envelopeCustomFieldsListLabel">Envelope Fields</label>
+                        <asp:DropDownList ID="envelopeCustomFieldsList" runat="server" Style="width: 200px" AutoPostBack="True" />
+                    </div>
+                    <hr />
+                </div>
+            </div>
+            <div class="row" id="DocumentFields" runat="server">
+                <div class="col-xs-12">
+                    <h2>Document Fields</h2>
+                    <div class="form-group">
+                        <label for="tabName">Name</label>
+                        <input type="text" runat="server" class="form-control" id="DocumentFieldName" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="tabName">Value</label>
+                        <input type="text" runat="server" class="form-control" id="DocumentFieldValue" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <button type="button" visible="true" id="AddDocumentFieldButton" runat="server" class="btn" style="color: #fff; padding: 10px 80px; font-size: 14px; margin: 40px auto; display: block;"></button>
+                    </div>
+                    <div class="form-group">
+                        <label for="envelopeCustomFieldsList" id="documentFieldsListLabel">Document Fields</label>
+                        <asp:DropDownList ID="documentFieldsList" runat="server" Style="width: 200px" AutoPostBack="True" />
+                    </div>
                     <br />
-                    <label for="templatesListLabel" id="templatesListLabel">Templates List</label>
-                    <asp:DropDownList ID="templatesList" runat="server" AutoPostBack="True" />
                 </div>
             </div>
             <button type="button" visible="true" id="button" runat="server" class="btn" style="color: #fff; padding: 10px 80px; font-size: 14px; margin: 40px auto; display: block;"></button>
