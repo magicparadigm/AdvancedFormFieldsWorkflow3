@@ -70,6 +70,7 @@
             <li><a href="PDFFormFields.aspx">PDF Form Fields</a></li>
             <li><a href="EnvelopeCustom - Document Fields.aspx">Envelope & Document Fields</a></li>
             <li><a href="DOL.aspx">DOL</a></li>
+            <li><a href="eNotary.aspx">eNotary</a></li>
         </ul>
         <form class="form-inline" runat="server" id="form">
             <div class="row">

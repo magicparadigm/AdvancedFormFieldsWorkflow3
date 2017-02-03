@@ -165,7 +165,7 @@ public partial class demos_DOL : System.Web.UI.Page
         public string name { get; set; }
         public string documentId { get; set; }
         public string display { get; set; }
-        public Boolean includeInDownload { get; set; }
+        public Nullable<bool> includeInDownload { get; set; }
         public string signerMustAcknowledge { get; set; }
         public string fileExtension { get; set; }
     }
@@ -275,6 +275,7 @@ public partial class demos_DOL : System.Web.UI.Page
         mainDocument.name = "Main Document";
         mainDocument.documentId = "1";
         mainDocument.fileExtension = "doc";
+        mainDocument.includeInDownload = null;
         createEnvelopeRequest.documents.Add(mainDocument);
 
         Document supplementalDocument = new Document();
@@ -288,18 +289,18 @@ public partial class demos_DOL : System.Web.UI.Page
             supplementalDocument.includeInDownload = false;
 
         // Registration type
-        if (Modal.Checked)
-        {
+        //if (Modal.Checked)
+        //{
             supplementalDocument.display = "modal";
-        }
-        else if (Download.Checked)
-        {
-            supplementalDocument.display = "download";    
-        }
-        else if (Inline.Checked)
-        {
-            supplementalDocument.display = "inline";
-        }
+        //}
+        //else if (Download.Checked)
+        //{
+        //    supplementalDocument.display = "download";    
+        //}
+        //else if (Inline.Checked)
+        //{
+        //    supplementalDocument.display = "inline";
+        //}
 
         if (View_.Checked)
         {
@@ -329,7 +330,8 @@ public partial class demos_DOL : System.Web.UI.Page
         signerOne.recipientId = "1";
         signerOne.roleName = "signer1";
         signerOne.routingOrder = "1";
-        signerOne.clientUserId = RandomizeClientUserID();
+        if (embedded.Checked)
+            signerOne.clientUserId = RandomizeClientUserID();
 
         // Add tab for the recipient
         signerOne.tabs = new Tabs();
@@ -440,69 +442,73 @@ public partial class demos_DOL : System.Web.UI.Page
                 createEnvelopeResponse = JsonConvert.DeserializeObject<CreateEnvelopeResponse>(responseText);
                 if (createEnvelopeResponse.status.Equals("sent"))
                 {
-                    // Now that we have created the envelope, get the recipient token for the first signer
-                    String url = Request.Url.AbsoluteUri;
-                    RecipientViewRequest recipientViewRequest = new RecipientViewRequest();
-                    recipientViewRequest.authenticationMethod = "email";
-                    recipientViewRequest.clientUserId = signerOne.clientUserId;
-                    recipientViewRequest.email = email.Value;
-                    if (!Request.Browser.IsMobileDevice)
-                    {
-                        recipientViewRequest.returnUrl = url.Substring(0, url.LastIndexOf("/")) + "/EmbeddedSigningComplete0.aspx?envelopeID=" + createEnvelopeResponse.envelopeId;
-                    }
+                    if (remote.Checked)
+                        Response.Redirect("ConfirmationPage.aspx");
                     else
                     {
-                        recipientViewRequest.returnUrl = url.Substring(0, url.LastIndexOf("/")) + "/ConfirmationPage.aspx?envelopeID=" + createEnvelopeResponse.envelopeId;
+                        // Now that we have created the envelope, get the recipient token for the first signer
+                        String url = Request.Url.AbsoluteUri;
+                        RecipientViewRequest recipientViewRequest = new RecipientViewRequest();
+                        recipientViewRequest.authenticationMethod = "email";
+                        recipientViewRequest.clientUserId = signerOne.clientUserId;
+                        recipientViewRequest.email = email.Value;
+                        if (!Request.Browser.IsMobileDevice)
+                        {
+                            recipientViewRequest.returnUrl = url.Substring(0, url.LastIndexOf("/")) + "/EmbeddedSigningComplete0.aspx?envelopeID=" + createEnvelopeResponse.envelopeId;
+                        }
+                        else
+                        {
+                            recipientViewRequest.returnUrl = url.Substring(0, url.LastIndexOf("/")) + "/ConfirmationPage.aspx?envelopeID=" + createEnvelopeResponse.envelopeId;
 
-                    }
-                    recipientViewRequest.userName = signerOne.name;
+                        }
+                        recipientViewRequest.userName = signerOne.name;
 
-                    HttpWebRequest request2 = HttpWebRequest.Create(ConfigurationManager.AppSettings["DocuSignServer"] + "/restapi/v2/accounts/" + accountId.Value + "/envelopes/" + createEnvelopeResponse.envelopeId + "/views/recipient") as HttpWebRequest;
-                    request2.Method = "POST";
+                        HttpWebRequest request2 = HttpWebRequest.Create(ConfigurationManager.AppSettings["DocuSignServer"] + "/restapi/v2/accounts/" + accountId.Value + "/envelopes/" + createEnvelopeResponse.envelopeId + "/views/recipient") as HttpWebRequest;
+                        request2.Method = "POST";
 
-                    // Set the authenticationheader
-                    request2.Headers["X-DocuSign-Authentication"] = GetSecurityHeader();
+                        // Set the authenticationheader
+                        request2.Headers["X-DocuSign-Authentication"] = GetSecurityHeader();
 
-                    request2.Accept = "application/json";
-                    request2.ContentType = "application/json";
+                        request2.Accept = "application/json";
+                        request2.ContentType = "application/json";
 
-                    Stream reqStream2 = request2.GetRequestStream();
+                        Stream reqStream2 = request2.GetRequestStream();
 
-                    WriteStream(reqStream2, JsonConvert.SerializeObject(recipientViewRequest));
-                    HttpWebResponse response2 = request2.GetResponse() as HttpWebResponse;
+                        WriteStream(reqStream2, JsonConvert.SerializeObject(recipientViewRequest));
+                        HttpWebResponse response2 = request2.GetResponse() as HttpWebResponse;
 
-                    responseBytes = new byte[response2.ContentLength];
-                    using (var reader = new System.IO.BinaryReader(response2.GetResponseStream()))
-                    {
-                        reader.Read(responseBytes, 0, responseBytes.Length);
-                    }
-                    string response2Text = Encoding.UTF8.GetString(responseBytes);
+                        responseBytes = new byte[response2.ContentLength];
+                        using (var reader = new System.IO.BinaryReader(response2.GetResponseStream()))
+                        {
+                            reader.Read(responseBytes, 0, responseBytes.Length);
+                        }
+                        string response2Text = Encoding.UTF8.GetString(responseBytes);
 
-                    RecipientViewResponse recipientViewResponse = new RecipientViewResponse();
-                    recipientViewResponse = JsonConvert.DeserializeObject<RecipientViewResponse>(response2Text);
-                    Session.Add("envelopeID", createEnvelopeResponse.envelopeId);
+                        RecipientViewResponse recipientViewResponse = new RecipientViewResponse();
+                        recipientViewResponse = JsonConvert.DeserializeObject<RecipientViewResponse>(response2Text);
+                        Session.Add("envelopeID", createEnvelopeResponse.envelopeId);
 
-                    // If it's a non-touch aware device, show the signing session in an iFrame
-                    if (!Request.Browser.IsMobileDevice)
-                    {
                         // If it's a non-touch aware device, show the signing session in an iFrame
-                        if (!Request.Browser.Browser.Equals("InternetExplorer") && (!Request.Browser.Browser.Equals("Safari")))
+                        if (!Request.Browser.IsMobileDevice)
                         {
-                            docusignFrame.Visible = true;
-                            docusignFrame.Src = recipientViewResponse.url;
+                            // If it's a non-touch aware device, show the signing session in an iFrame
+                            if (!Request.Browser.Browser.Equals("InternetExplorer") && (!Request.Browser.Browser.Equals("Safari")))
+                            {
+                                docusignFrame.Visible = true;
+                                docusignFrame.Src = recipientViewResponse.url;
+                            }
+                            else // Handle IE differently since it does not allow dynamic setting of the iFrame width and height
+                            {
+                                docusignFrameIE.Visible = true;
+                                docusignFrameIE.Src = recipientViewResponse.url;
+                            }
                         }
-                        else // Handle IE differently since it does not allow dynamic setting of the iFrame width and height
+                        // For touch aware devices, show the signing session in main browser window
+                        else
                         {
-                            docusignFrameIE.Visible = true;
-                            docusignFrameIE.Src = recipientViewResponse.url;
+                            Response.Redirect(recipientViewResponse.url);
                         }
                     }
-                    // For touch aware devices, show the signing session in main browser window
-                    else
-                    {
-                        Response.Redirect(recipientViewResponse.url);
-                    }
-
                 }
             }
         }
@@ -532,224 +538,6 @@ public partial class demos_DOL : System.Web.UI.Page
         }
 
     }
-    //    FileStream fs = null;
-
-    //    try
-    //    {
-    //        String userName = ConfigurationManager.AppSettings["API.Email"];
-    //        String password = ConfigurationManager.AppSettings["API.Password"];
-    //        String integratorKey = ConfigurationManager.AppSettings["API.IntegratorKey"];
-
-
-    //        String auth = "<DocuSignCredentials><Username>" + userName
-    //            + "</Username><Password>" + password
-    //            + "</Password><IntegratorKey>" + integratorKey
-    //            + "</IntegratorKey></DocuSignCredentials>";
-    //        ServiceReference1.DSAPIServiceSoapClient client = new ServiceReference1.DSAPIServiceSoapClient();
-
-    //        using (OperationContextScope scope = new System.ServiceModel.OperationContextScope(client.InnerChannel))
-    //        {
-    //            HttpRequestMessageProperty httpRequestProperty = new HttpRequestMessageProperty();
-    //            httpRequestProperty.Headers.Add("X-DocuSign-Authentication", auth);
-    //            OperationContext.Current.OutgoingMessageProperties[HttpRequestMessageProperty.Name] = httpRequestProperty;
-
-    //            CompositeTemplate template = new CompositeTemplate();
-
-    //            // Set up the envelope
-    //            EnvelopeInformation envInfo = new EnvelopeInformation();
-    //            envInfo.AutoNavigation = true;
-    //            envInfo.AccountId = ConfigurationManager.AppSettings["API.AccountId"];
-    //            envInfo.Subject = "Envelope Custom & Document Fields Example";
-
-    //            // Set up envelope custom fields 
-    //            envInfo.CustomFields = new CustomField[envelopeCustomFieldsList.Items.Count];
-    //            for (Int16 i = 0; i < envelopeCustomFieldsList.Items.Count; i++)
-    //            {
-    //                envInfo.CustomFields[i] = new CustomField();
-    //                envInfo.CustomFields[i].Name = envelopeCustomFieldsList.Items[i].Text;
-    //                envInfo.CustomFields[i].Value = envelopeCustomFieldsList.Items[i].Value;
-    //            }
-
-    //            // Set up recipients 
-    //            Recipient[] recipients;
-    //            if (jointEmail.Value.Trim().Equals(""))
-    //            {
-    //                recipients = new Recipient[1];
-    //            }
-    //            else
-    //            {
-    //                recipients = new Recipient[2];
-    //            }
-
-    //            recipients[0] = new Recipient();
-    //            recipients[0].ID = "1";
-    //            recipients[0].Email = email.Value;
-    //            recipients[0].Type = RecipientTypeCode.Signer;
-    //            recipients[0].UserName = firstname.Value + " " + lastname.Value;
-    //            recipients[0].CaptiveInfo = new RecipientCaptiveInfo();
-
-    //            recipients[0].CaptiveInfo.ClientUserId = RandomizeClientUserID();
-    //            recipients[0].RoutingOrder = 1;
-    //            recipients[0].RoleName = "Signer1";
-
-    //            // If there is a 2nd recipient, configure 
-    //            if (!jointEmail.Value.Equals(""))
-    //            {
-    //                recipients[1] = new Recipient();
-    //                recipients[1].ID = "2";
-    //                recipients[1].Email = jointEmail.Value;
-    //                recipients[1].Type = RecipientTypeCode.Signer;
-    //                recipients[1].UserName = jointFirstname.Value + " " + jointLastname.Value;
-    //                recipients[1].RoleName = "Signer2";
-    //                recipients[1].RoutingOrder = 1;
-    //            }
-
-    //            //Configure the inline templates 
-    //            InlineTemplate inlineTemplate = new InlineTemplate();
-    //            inlineTemplate.Sequence = "1";
-    //            inlineTemplate.Envelope = new Envelope();
-    //            inlineTemplate.Envelope.Recipients = recipients;
-    //            inlineTemplate.Envelope.AccountId = ConfigurationManager.AppSettings["API.AccountId"];
-
-    //            // Initialize tab properties 
-    //            Tab tab = new Tab();
-    //            tab.Type = TabTypeCode.SignHere;
-    //            tab.XPosition = xPosition.Value;
-    //            tab.YPosition = yPosition.Value;
-    //            tab.TabLabel = tabName.Value;
-    //            tab.RecipientID = "1";
-    //            tab.DocumentID = "1";
-    //            tab.Name = tabName.Value;
-    //            tab.PageNumber = tabPage.Value;
-
-    //            inlineTemplate.Envelope.Tabs = new Tab[] { tab };
-
-    //            template.InlineTemplates = new InlineTemplate[] { inlineTemplate };
-
-
-    //            // Configure the document
-    //            template.Document = new Document();
-    //            template.Document.ID = "1";
-    //            template.Document.Name = "Sample Document";
-    //            BinaryReader binReader = null;
-    //            String filename = uploadFile.Value;
-    //            if (File.Exists(Server.MapPath("~/App_Data/" + filename)))
-    //            {
-    //                fs = new FileStream(Server.MapPath("~/App_Data/" + filename), FileMode.Open);
-    //                binReader = new BinaryReader(fs);
-    //            }
-    //            byte[] PDF = binReader.ReadBytes(System.Convert.ToInt32(fs.Length));
-    //            template.Document.PDFBytes = PDF;
-
-    //            template.Document.TransformPdfFields = true;
-    //            template.Document.FileExtension = "pdf";
-
-    //            // Add document fields
-    //            template.Document.DocumentFields = new DocumentField[documentFieldsList.Items.Count];
-    //            for (Int16 i = 0; i < documentFieldsList.Items.Count; i++)
-    //            {
-    //                template.Document.DocumentFields[i] = new DocumentField();
-    //                template.Document.DocumentFields[i].Name = documentFieldsList.Items[i].Text;
-    //                template.Document.DocumentFields[i].Value = documentFieldsList.Items[i].Value;
-    //            }
-
-    //            // Add Connect configuration
-    //            envInfo.EventNotification = new EventNotification(); ;
-    //            envInfo.EventNotification.URL = ConfigurationManager.AppSettings["ConnectListener"];
-
-    //            envInfo.EventNotification.RequireAcknowledgment = true;
-    //            envInfo.EventNotification.RequireAcknowledgmentSpecified = true;
-    //            envInfo.EventNotification.LoggingEnabled = true;
-    //            envInfo.EventNotification.LoggingEnabledSpecified = true;
-    //            envInfo.EventNotification.IncludeTimeZone = true;
-    //            envInfo.EventNotification.IncludeTimeZoneSpecified = true;
-    //            envInfo.EventNotification.IncludeSenderAccountAsCustomField = true;
-    //            envInfo.EventNotification.IncludeSenderAccountAsCustomFieldSpecified = true;
-    //            envInfo.EventNotification.IncludeEnvelopeVoidReason = true;
-    //            envInfo.EventNotification.IncludeEnvelopeVoidReasonSpecified = true;
-    //            envInfo.EventNotification.IncludeDocumentFields = true;
-    //            envInfo.EventNotification.IncludeDocumentFieldsSpecified = true;
-    //            envInfo.EventNotification.EnvelopeEvents = new EnvelopeEvent[5];
-    //            envInfo.EventNotification.EnvelopeEvents[0] = new EnvelopeEvent();
-    //            envInfo.EventNotification.EnvelopeEvents[0].EnvelopeEventStatusCode = EnvelopeEventStatusCode.Sent;
-    //            envInfo.EventNotification.EnvelopeEvents[1] = new EnvelopeEvent();
-    //            envInfo.EventNotification.EnvelopeEvents[1].EnvelopeEventStatusCode = EnvelopeEventStatusCode.Voided;
-    //            envInfo.EventNotification.EnvelopeEvents[2] = new EnvelopeEvent();
-    //            envInfo.EventNotification.EnvelopeEvents[2].EnvelopeEventStatusCode = EnvelopeEventStatusCode.Delivered;
-    //            envInfo.EventNotification.EnvelopeEvents[3] = new EnvelopeEvent();
-    //            envInfo.EventNotification.EnvelopeEvents[3].EnvelopeEventStatusCode = EnvelopeEventStatusCode.Declined;
-    //            envInfo.EventNotification.EnvelopeEvents[4] = new EnvelopeEvent();
-    //            envInfo.EventNotification.EnvelopeEvents[4].EnvelopeEventStatusCode = EnvelopeEventStatusCode.Completed;
-    //            envInfo.EventNotification.RecipientEvents = new RecipientEvent[6];
-    //            envInfo.EventNotification.RecipientEvents[0] = new RecipientEvent();
-    //            envInfo.EventNotification.RecipientEvents[0].RecipientEventStatusCode = RecipientEventStatusCode.AuthenticationFailed;
-    //            envInfo.EventNotification.RecipientEvents[1] = new RecipientEvent();
-    //            envInfo.EventNotification.RecipientEvents[1].RecipientEventStatusCode = RecipientEventStatusCode.AutoResponded;
-    //            envInfo.EventNotification.RecipientEvents[2] = new RecipientEvent();
-    //            envInfo.EventNotification.RecipientEvents[2].RecipientEventStatusCode = RecipientEventStatusCode.Completed;
-    //            envInfo.EventNotification.RecipientEvents[3] = new RecipientEvent();
-    //            envInfo.EventNotification.RecipientEvents[3].RecipientEventStatusCode = RecipientEventStatusCode.Declined;
-    //            envInfo.EventNotification.RecipientEvents[4] = new RecipientEvent();
-    //            envInfo.EventNotification.RecipientEvents[4].RecipientEventStatusCode = RecipientEventStatusCode.Delivered;
-    //            envInfo.EventNotification.RecipientEvents[5] = new RecipientEvent();
-    //            envInfo.EventNotification.RecipientEvents[5].RecipientEventStatusCode = RecipientEventStatusCode.Sent;
-
-    //            //Create envelope with all the composite template information 
-    //            EnvelopeStatus status = client.CreateEnvelopeFromTemplatesAndForms(envInfo, new CompositeTemplate[] { template }, true);
-    //            RequestRecipientTokenAuthenticationAssertion assert = new RequestRecipientTokenAuthenticationAssertion();
-    //            assert.AssertionID = "12345";
-    //            assert.AuthenticationInstant = DateTime.Now;
-    //            assert.AuthenticationMethod = RequestRecipientTokenAuthenticationAssertionAuthenticationMethod.Password;
-    //            assert.SecurityDomain = "www.magicparadigm.com";
-
-    //            RequestRecipientTokenClientURLs clientURLs = new RequestRecipientTokenClientURLs();
-
-    //            clientURLs.OnAccessCodeFailed = ConfigurationManager.AppSettings["RecipientTokenClientURLsPrefix"] + "?envelopeId=" + status.EnvelopeID + "&event=OnAccessCodeFailed";
-    //            clientURLs.OnCancel = ConfigurationManager.AppSettings["RecipientTokenClientURLsPrefix"] + "?envelopeId=" + status.EnvelopeID + "&event=OnCancel";
-    //            clientURLs.OnDecline = ConfigurationManager.AppSettings["RecipientTokenClientURLsPrefix"] + "?envelopeId=" + status.EnvelopeID + "&event=OnDecline";
-    //            clientURLs.OnException = ConfigurationManager.AppSettings["RecipientTokenClientURLsPrefix"] + "?envelopeId=" + status.EnvelopeID + "&event=OnException";
-    //            clientURLs.OnFaxPending = ConfigurationManager.AppSettings["RecipientTokenClientURLsPrefix"] + "?envelopeId=" + status.EnvelopeID + "&event=OnFaxPending";
-    //            clientURLs.OnIdCheckFailed = ConfigurationManager.AppSettings["RecipientTokenClientURLsPrefix"] + "?envelopeId=" + status.EnvelopeID + "&event=OnIdCheckFailed";
-    //            clientURLs.OnSessionTimeout = ConfigurationManager.AppSettings["RecipientTokenClientURLsPrefix"] + "?envelopeId=" + status.EnvelopeID + "&event=OnSessionTimeout";
-    //            clientURLs.OnTTLExpired = ConfigurationManager.AppSettings["RecipientTokenClientURLsPrefix"] + "?envelopeId=" + status.EnvelopeID + "&event=OnTTLExpired";
-    //            clientURLs.OnViewingComplete = ConfigurationManager.AppSettings["RecipientTokenClientURLsPrefix"] + "?envelopeId=" + status.EnvelopeID + "&event=OnViewingComplete";
-
-
-    //            String url = Request.Url.AbsoluteUri;
-
-    //            String recipientToken;
-
-    //            clientURLs.OnSigningComplete = url.Substring(0, url.LastIndexOf("/")) + "/EmbeddedSigningComplete1.aspx?envelopeID=" + status.EnvelopeID;
-    //            recipientToken = client.RequestRecipientToken(status.EnvelopeID, recipients[0].CaptiveInfo.ClientUserId, recipients[0].UserName, recipients[0].Email, assert, clientURLs);
-    //            Session["envelopeID"] = status.EnvelopeID;
-    //            if (!Request.Browser.Browser.Equals("InternetExplorer") && (!Request.Browser.Browser.Equals("Safari")))
-    //            {
-    //                docusignFrame.Visible = true;
-    //                docusignFrame.Src = recipientToken;
-    //            }
-    //            else // Handle IE differently since it does not allow dynamic setting of the iFrame width and height
-    //            {
-    //                docusignFrameIE.Visible = true;
-    //                docusignFrameIE.Src = recipientToken;
-    //            }
-
-
-    //        }
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        // Log4Net Piece
-    //        log4net.ILog logger = log4net.LogManager.GetLogger(typeof(demos_EnvelopeCustom___Document_Fields));
-    //        logger.Info("\n----------------------------------------\n");
-    //        logger.Error(ex.Message);
-    //        logger.Error(ex.StackTrace);
-    //        Response.Write(ex.Message);
-
-    //    }
-    //    finally
-    //    {
-    //        if (fs != null)
-    //            fs.Close();
-    //    }
+   
  
 }

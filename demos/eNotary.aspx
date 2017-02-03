@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="AnchorText.aspx.cs" Inherits="AnchorText" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="eNotary.aspx.cs" Inherits="demos_eNotary" %>
 
 <!DOCTYPE html>
 <html class="no-js" lang="">
@@ -66,22 +66,51 @@
         <ul class="nav nav-pills" role="tablist">
             <li><a href="Default.aspx">Templates</a></li>
             <li><a href="DynamicFields.aspx">Dynamic Fields</a></li>
-            <li class="active"><a href="AnchorText.aspx">Anchor Text Fields</a></li>
+            <li><a href="AnchorText.aspx">Anchor Text Fields</a></li>
             <li><a href="PDFFormFields.aspx">PDF Form Fields</a></li>
             <li><a href="EnvelopeCustom - Document Fields.aspx">Envelope & Document Fields</a></li>
             <li><a href="DOL.aspx">DOL</a></li>
-            <li><a href="eNotary.aspx">eNotary</a></li>
+            <li class="active"><a href="eNotary.aspx">eNotary</a></li>
         </ul>
         <form class="form-inline" runat="server" id="form">
+            <asp:RequiredFieldValidator Display="Dynamic" ID="emailvalidator" runat="server" ControlToValidate="email" ErrorMessage="<br>* Email is a required field." ForeColor="Red" />
+            <asp:RequiredFieldValidator Display="Dynamic" ID="lnamevalidator" runat="server" ControlToValidate="lastname" ErrorMessage="<br>* Last name is a required field" ForeColor="Red" />
+            <asp:RequiredFieldValidator Display="Dynamic" ID="fnameValidator" runat="server" ControlToValidate="firstname" ErrorMessage="<br>* First name is a required field" ForeColor="Red" />
+
             <div class="row">
                 <div class="col-xs-12">
-                    <h1><a id="PrefillClick" runat="server" href="#">Anchor Text Example</a></h1>
+                    <h1><a id="PrefillClick" causesvalidation="false" runat="server" href="#">eNotary</a></h1>
 
+                </div>
+            </div>
+            <div class="row" id="AccountInfo" visible="false" runat="server">
+                <div class="col-xs-12">
+                    <h2>Sender Account Information </h2>
+                    <div class="form-group">
+                        <label for="acctEmail">Account Email </label>
+                        <input type="email" runat="server" class="form-control" id="acctEmail" placeholder="optional" title="Use this section if you want to override the default account information">
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label for="password">Account Password</label>
+                        <input type="password" runat="server" class="form-control" id="password" placeholder="optional" title="Use this section if you want to override the default account information">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="integratorKey">Integrator Key</label>
+                        <input type="text" runat="server" class="form-control" id="integratorKey" placeholder="optional" title="Use this section if you want to override the default account information">
+                    </div>
+                    <div class="form-group">
+                        <label for="accountId">Account ID</label>
+                        <input type="text" runat="server" class="form-control" id="accountId" placeholder="optional" title="Use this section if you want to override the default account information">
+                    </div>
+                    <hr />
                 </div>
             </div>
             <div class="row" id="primarySignerSection" runat="server">
                 <div class="col-xs-12">
-                    <h2>Primary Account Holder</h2>
+                    <h2>Signer Information</h2>
+                    <br />
                     <div class="form-group">
                         <label for="firstname">First Name</label>
                         <input type="text" runat="server" class="form-control" id="firstname" placeholder="">
@@ -97,73 +126,31 @@
                     </div>
                     <hr />
                 </div>
-
             </div>
-            <div class="row" id="jointSignerSection" runat="server">
+            <div class="row" id="notarySignerSection" runat="server">
                 <div class="col-xs-12">
-                    <h2>Joint Account Holder</h2>
+                    <h2>Notary Information</h2>
                     <div class="form-group">
                         <label for="firstname">First Name</label>
-                        <input type="text" runat="server" class="form-control" id="jointFirstname" placeholder="">
+                        <input type="text" runat="server" class="form-control" id="notaryFirstname" placeholder="">
                     </div>
                     <div class="form-group">
                         <label for="lastname">Last Name</label>
-                        <input type="text" runat="server" class="form-control" id="jointLastname" placeholder="">
+                        <input type="text" runat="server" class="form-control" id="notaryLastname" placeholder="">
                     </div>
                     <br>
                     <div class="form-group">
                         <label for="email">Email Address </label>
-                        <input type="email" runat="server" class="form-control" id="jointEmail" placeholder="">
+                        <input type="email" runat="server" class="form-control" id="notaryEmail" placeholder="">
                     </div>
                     <hr />
-                </div>
-            </div>
-
-            <div class="row" id="tabInfo" runat="server">
-                <div class="col-xs-12">
-                    <h2>Field Information</h2>
-                    <div class="form-group">
-                        <label for="tabName">Name</label>
-                        <input type="text" runat="server" class="form-control" id="tabName" placeholder="">
-                    </div>
-                    <div class="form-group">
-                        <label for="page">Anchor Text</label>
-                        <input type="text" runat="server" class="form-control" id="tab1AnchorText" placeholder="">
-                    </div>
-                    <br>
-                    <div class="form-group">
-                        <label for="tabName">Name</label>
-                        <input type="text" runat="server" class="form-control" id="tab2Name" placeholder="">
-                    </div>
-                    <div class="form-group">
-                        <label for="page">Anchor Text</label>
-                        <input type="text" runat="server" class="form-control" id="tab2AnchorText" placeholder="">
-                    </div>
-                    <hr />
-                </div>
-            </div>
-
-            <div class="row" id="templates" runat="server">
-                <div class="col-xs-12">
-                    <h2>Envelope Information</h2>
-                    <div class="form-group">
-                        <asp:FileUpload ID="FileUpload1" runat="server" />
-                    </div>
-                    <div class="form-group">
-                        <button type="button" visible="true" id="uploadButton" runat="server" class="btn" style="color: #fff; padding: 10px 80px; font-size: 14px; margin: 40px auto; display: block;"></button>
-                    </div>
-                    <div class="form-group">
-                        <label for="uploadFile">Upload File </label>
-                        <input type="text" runat="server" class="form-control" id="uploadFile" placeholder="" readonly="readonly">
-                    </div>
-                    <br />
                 </div>
             </div>
             <button type="button" visible="true" id="button" runat="server" class="btn" style="color: #fff; padding: 10px 80px; font-size: 14px; margin: 40px auto; display: block;"></button>
         </form>
     </div>
 
-    <iframe runat="server" id="docusignFrame" />
+    <iframe runat="server" id="docusignFrame" style="width: 100%; height: 768px" />
 
     <iframe runat="server" id="docusignFrameIE" style="width: 100%; height: 768px" />
 

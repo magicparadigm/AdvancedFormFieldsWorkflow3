@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="DOL.aspx.cs" Inherits="demos_DOL" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="CompositeTemplate.aspx.cs" Inherits="demos_CompositeTemplate" %>
 
 <!DOCTYPE html>
 <html class="no-js" lang="">
@@ -70,18 +70,17 @@
             <li><a href="PDFFormFields.aspx">PDF Form Fields</a></li>
             <li><a href="EnvelopeCustom - Document Fields.aspx">Envelope & Document Fields</a></li>
             <li class="active"><a href="DOL.aspx">DOL</a></li>
-            <li><a href="eNotary.aspx">eNotary</a></li>
         </ul>
         <form class="form-inline" runat="server" id="form">
-            <asp:RequiredFieldValidator Display="Dynamic" ID="emailvalidator" runat="server" ControlToValidate="email" ErrorMessage="<br>* Email is a required field." ForeColor="Red" />
-            <asp:RequiredFieldValidator Display="Dynamic" ID="lnamevalidator" runat="server" ControlToValidate="lastname" ErrorMessage="<br>* Last name is a required field" ForeColor="Red" />
-            <asp:RequiredFieldValidator Display="Dynamic" ID="fnameValidator" runat="server" ControlToValidate="firstname" ErrorMessage="<br>* First name is a required field" ForeColor="Red" />
-            <asp:RequiredFieldValidator Display="Dynamic" ID="uploadfilevalidator" runat="server" ControlToValidate="uploadfile" ErrorMessage="<br>* Upload of a main  document is required" ForeColor="Red" />
-            <asp:RequiredFieldValidator Display="Dynamic" ID="uploadfile2validator" runat="server" ControlToValidate="uploadfile2" ErrorMessage="<br>* Upload of a supplemental  document is required" ForeColor="Red" />
-            <asp:RequiredFieldValidator Display="Dynamic" ID="tabNamevalidator" runat="server" ControlToValidate="tabName" ErrorMessage="<br>* Signature field name is a required field" ForeColor="Red" />
-            <asp:RequiredFieldValidator Display="Dynamic" ID="tabPageValidator" runat="server" ControlToValidate="tabPage" ErrorMessage="<br>* Signature field page is a required field" ForeColor="Red" />
-            <asp:RequiredFieldValidator Display="Dynamic" ID="xPositionValidator" runat="server" ControlToValidate="xPosition" ErrorMessage="<br>* Signature field xPosition is required" ForeColor="Red" />
-            <asp:RequiredFieldValidator Display="Dynamic" ID="yPositionValidator" runat="server" ControlToValidate="yPosition" ErrorMessage="<br>* Signature field yPosition is required" ForeColor="Red" />
+            <asp:RequiredFieldValidator Display="Dynamic" id="emailvalidator" runat="server" ControlToValidate="email" ErrorMessage="<br>* Email is a required field." ForeColor="Red"/>            
+            <asp:RequiredFieldValidator Display="Dynamic" id="lnamevalidator" runat="server" ControlToValidate="lastname" ErrorMessage="<br>* Last name is a required field" ForeColor="Red"/>
+            <asp:RequiredFieldValidator Display="Dynamic" id="fnameValidator" runat="server" ControlToValidate="firstname" ErrorMessage="<br>* First name is a required field" ForeColor="Red"/>
+            <asp:RequiredFieldValidator Display="Dynamic" id="uploadfilevalidator" runat="server" ControlToValidate="uploadfile" ErrorMessage="<br>* Upload of a main  document is required" ForeColor="Red"/>            
+            <asp:RequiredFieldValidator Display="Dynamic" id="uploadfile2validator" runat="server" ControlToValidate="uploadfile2" ErrorMessage="<br>* Upload of a supplemental  document is required" ForeColor="Red"/>            
+            <asp:RequiredFieldValidator Display="Dynamic" id="tabNamevalidator" runat="server" ControlToValidate="tabName" ErrorMessage="<br>* Signature field name is a required field" ForeColor="Red"/>            
+            <asp:RequiredFieldValidator Display="Dynamic" id="tabPageValidator" runat="server" ControlToValidate="tabPage" ErrorMessage="<br>* Signature field page is a required field" ForeColor="Red"/>
+            <asp:RequiredFieldValidator Display="Dynamic" id="xPositionValidator" runat="server" ControlToValidate="xPosition" ErrorMessage="<br>* Signature field xPosition is required" ForeColor="Red"/>
+            <asp:RequiredFieldValidator Display="Dynamic" id="yPositionValidator" runat="server" ControlToValidate="yPosition" ErrorMessage="<br>* Signature field yPosition is required" ForeColor="Red"/>
             <div class="row">
                 <div class="col-xs-12">
                     <h1><a id="PrefillClick" causesvalidation="false" runat="server" href="#">Dept of Labor Fiduciary Rule (DOL)</a></h1>
@@ -113,20 +112,8 @@
                 </div>
             </div>
             <div class="row" id="primarySignerSection" runat="server">
-
                 <div class="col-xs-12">
                     <h2>Signer Information</h2>
-                    <div class="form-group">
-                        <div class="radio">
-                            <input runat="server" type="radio" class="form-control" checked name="SignerType" value="embedded" id="embedded">
-                            Embedded Signer
-                        </div>
-                        <div class="radio">
-                            <input runat="server" type="radio" class="form-control" name="SignerType" value="remote" id="remote">
-                            Remote Signer 
-                        </div>
-                    </div>
-                    <br />
                     <div class="form-group">
                         <label for="firstname">First Name</label>
                         <input type="text" runat="server" class="form-control" id="firstname" placeholder="">
@@ -173,7 +160,7 @@
                     </div>
                     <div class="form-group">
                         <label for="uploadFile">Uploaded File </label>
-                        <input type="text" runat="server" class="form-control" id="uploadFile" placeholder="" readonly="readonly" style="width: 500px">
+                        <input type="text" runat="server" class="form-control" id="uploadFile" placeholder="" readonly="readonly" style="width:500px">
                     </div>
                     <br />
                     <div class="col-xs-12">
@@ -209,15 +196,15 @@
                     </div>
                     <div class="form-group">
                         <label for="uploadFile">Uploaded File </label>
-                        <input type="text" runat="server" class="form-control" id="uploadFile2" placeholder="" readonly="readonly" style="width: 500px">
+                        <input type="text" runat="server" class="form-control" id="uploadFile2" placeholder="" readonly="readonly" style="width:500px">
                     </div>
 
                     <hr />
                 </div>
-            </div>
-
-            <div class="col-xs-12" id="SupplementalDocConfig" runat="server">
-<%--                <div class="col-xs-12">
+                </div>
+                
+                <div class="col-xs-12" id="SupplementalDocConfig" runat="server">
+                    <div class="col-xs-12">
                     <h2>How should the supplemental information be displayed?</h2>
                     <div class="form-group">
                         <div class="radio">
@@ -225,18 +212,18 @@
                             Modal - Show the supplemental information in a modal window
                         </div>
                         <div class="radio">
-                            <input type="radio"  runat="server" class="form-control" name="Display" value="Download" id="Download">
+                            <input type="radio" runat="server" class="form-control" name="Display" value="Download" id="Download">
                             New Browser Window - Show the supplemental information in a new browser window
                         </div>
                         <div class="radio">
-                            <input type="radio"  runat="server" class="form-control" name="Display" value="Inline" id="Inline">
+                            <input type="radio" runat="server" class="form-control" name="Display" value="Inline" id="Inline">
                             Inline - Show the supplemental information in regular signing window
                         </div>
                     </div>
                     <hr />
-                </div>--%>
+                </div>
                 <div class="col-xs-12">
-                    <h2>How should the signer acknowledge the supplemental information?</h2>
+                    <h2>How should the signer acknowledge the supplmental information?</h2>
                     <div class="form-group">
                         <div class="radio">
                             <input type="radio" runat="server" class="form-control" name="SignerAcknowledgement" value="View_" id="View_" checked>
@@ -267,11 +254,10 @@
                         <div class="radio">
                             <input type="radio" runat="server" class="form-control" name="IncludeInDownload" value="IncludeInDownloadFalse" id="IncludeInDownloadFalse">
                             No - If the documents are downloaded as a combined document, the supplemental information is not included 
-                            <br />
-                            <br />
+                            <br /><br />
                         </div>
-                    </div>
-                </div>
+                     </div>
+                 </div>
             </div>
 
             <button type="button" visible="true" id="button" runat="server" class="btn" style="color: #fff; padding: 10px 80px; font-size: 14px; margin: 40px auto; display: block;"></button>
@@ -280,7 +266,7 @@
         </form>
     </div>
 
-    <iframe runat="server" id="docusignFrame"   style ="width: 100%; height: 768px" />
+    <iframe runat="server" id="docusignFrame" />
 
     <iframe runat="server" id="docusignFrameIE" style="width: 100%; height: 768px" />
 

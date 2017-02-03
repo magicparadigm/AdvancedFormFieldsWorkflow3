@@ -241,7 +241,7 @@ public partial class AnchorText : System.Web.UI.Page
         catch (Exception ex)
         {
             // Log4Net Piece
-            log4net.ILog logger = log4net.LogManager.GetLogger(typeof(DynamicFields));
+            log4net.ILog logger = log4net.LogManager.GetLogger(typeof(AnchorText));
             logger.Info("\n----------------------------------------\n");
             logger.Error(ex.Message);
             logger.Error(ex.StackTrace);

@@ -319,7 +319,7 @@ public partial class demos_PDFFormFields : System.Web.UI.Page
         catch (Exception ex)
         {
             // Log4Net Piece
-            log4net.ILog logger = log4net.LogManager.GetLogger(typeof(_Default));
+            log4net.ILog logger = log4net.LogManager.GetLogger(typeof(demos_PDFFormFields));
             logger.Info("\n----------------------------------------\n");
             logger.Error(ex.Message);
             logger.Error(ex.StackTrace);
