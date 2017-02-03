@@ -42,7 +42,7 @@
             <nav class="navbar">
                 <div class="navbar-mini">
                     <ul>
-                        <li><a href="https://github.com/magicparadigm/AdvancedFormsFieldsWorkflow">Source Code</a></li>
+                        <li><a href="https://github.com/magicparadigm/AdvancedFormFieldsWorkflow2">Source Code</a></li>
                         <li><a href="https://www.docusign.com/developer-center">DocuSign DevCenter</a></li>
                         <li><a href="https://www.docusign.com/p/APIGuide/Content/Sending%20Group/Rules%20for%20CompositeTemplate%20Usage.htm">Field Transforms</a></li>
                     </ul>
@@ -68,14 +68,11 @@
             <li><a href="DynamicFields.aspx">Dynamic Fields</a></li>
             <li><a href="AnchorText.aspx">Anchor Text Fields</a></li>
             <li><a href="PDFFormFields.aspx">PDF Form Fields</a></li>
-            <li><a href="EnvelopeCustom - Document Fields.aspx">Envelope & Document Fields</a></li>
-            <li><a href="DOL.aspx">DOL</a></li>
-            <li><a href="eNotary.aspx">eNotary</a></li>
         </ul>
         <form class="form-inline" runat="server" id="form">
             <div class="row">
                 <div class="col-xs-12">
-                    <h1><a id="PrefillClick" runat="server" href="#">Envelope Custom/Document Fields Example</a></h1>
+                    <h1><a id="PrefillClick" runat="server" href="#">Templates Example</a></h1>
 
                 </div>
             </div>
