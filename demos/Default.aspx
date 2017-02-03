@@ -64,10 +64,13 @@
     <div id="mainForm" runat="server" class="container-fixed formz-vertical">
         <br />
         <ul class="nav nav-pills" role="tablist">
-            <li class="active"><a href="#">Templates</a></li>
+            <li class="active"><a href="Default.aspx">Templates</a></li>
             <li><a href="DynamicFields.aspx">Dynamic Fields</a></li>
             <li><a href="AnchorText.aspx">Anchor Text Fields</a></li>
             <li><a href="PDFFormFields.aspx">PDF Form Fields</a></li>
+            <li><a href="EnvelopeCustom - Document Fields.aspx">Envelope & Document Fields</a></li>
+            <li><a href="DOL.aspx">DOL</a></li>
+            <li><a href="eNotary.aspx">eNotary</a></li>
         </ul>
         <form class="form-inline" runat="server" id="form">
             <div class="row">
